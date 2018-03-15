@@ -3,7 +3,7 @@ A HTML odometer using canvas.
 
 ![a](https://user-images.githubusercontent.com/45740/37472571-b13b0080-286c-11e8-8495-ef6aba591646.gif)
 
-# API
+# Example of Usage
 
 ```javascript
     const odometer = new FloatOdometer(4.0, {
