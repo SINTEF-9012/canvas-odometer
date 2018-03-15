@@ -4,9 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Odometer</title>
+    <title>Canvas Odometer</title>
 </head>
 <body>
-   <script src="odometer.old.js"></script> 
+    <h1>Canvas Odometer</h1>
+   <script src="odometer.old.js"></script>
+   <script>
+    const odo = new FloatOdometer(4.0, {
+        textColour: "#003c65",
+        borderColour: "#a19589"
+    });
+    odo.appendTo(document.body);
+    var cpt = 0;
+    function setRandomValue() {
+        var v = (cpt++ + Math.random()).toFixed(5);
+        console.log(v);
+        odo.set(v);
+    }
+    setRandomValue();
+    setInterval(setRandomValue, 4000);
+    //odo.set(Math.round(Math.random()*1000000)/1000);
+    //odo.set(Math.round(Math.random()*1000000));
+   </script>
+   <style>
+       h1 {
+           font-family: sans-serif;
+           color: #003c65;
+           text-align: center;
+           font-size: 3.63em;
+       }
+       .canvas-float-odometer {
+           justify-content: center;
+       }
+   </style>
 </body>
 </html>

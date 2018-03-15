@@ -172,9 +172,11 @@ class Odometer {
             } else {
                 if (nbDifferents === 0) {
                     nbDifferents = 1;
+                    digit.stop();
                     digit.stopOnDigit(stopDigit);
                 } else {
                     ++nbDifferents;
+                    digit.dontStopOnDigit();
                     digit.spin();
                 }
             }
@@ -236,7 +238,7 @@ class OdometerDigit {
 
         if (this.shouldStopOnDigit && timeDiff !== 1.0) {
             const m = -textHeight * (this.targetDigit+1 || 0);
-            const margin = this.speed*2 + textHeight / 30.0;
+            const margin = 1+this.speed*2 + textHeight / 50.0;
             if (p > m-margin && p < m+margin) {
                 this.isSpinning = false;
                 if (this.stopCallback) {
@@ -285,6 +287,11 @@ class OdometerDigit {
         this.targetDigit = digit;
     }
 
+    dontStopOnDigit() {
+        this.shouldStopOnDigit = false;
+        this.targetDigit = 0;
+    }
+
     appendTo(node) {
         node.appendChild(this.canvas);
     }
@@ -296,77 +303,3 @@ class OdometerDigit {
     }
 }
 
-const odo = new FloatOdometer(4.0);
-odo.appendTo(document.body);
-odo.set(123.456);
-
-//document.body.appendChild(odo.digitsCanvas);
-//odo.buildDigitsCanvas();
-/*const digit = new OdometerDigit(odo);
-digit.buildCanvas();
-
-document.body.appendChild(odo.digitsCanvas);
-//document.body.appendChild(digit.canvas);
-digit.appendTo(document.body);*/
-
-//function lol(time) {
-//    digit.spin();
-//    digit.draw();
-//    requestAnimationFrame(lol);
-//}
-
-//lol();
-
-/*var sizeRatio = 4.0;
-var textWidth = 15 * sizeRatio;
-var textHeight = 20 * sizeRatio;
-var textLeftMargin = 2 * sizeRatio;
-var textTopMargin = 6 * sizeRatio;
-
-var canvas = document.createElement("canvas");
-canvas.width = textWidth;
-canvas.height = 11*textHeight + textTopMargin;
-
-var ctx = canvas.getContext("2d");
-
-ctx.fillStyle = "#cfd8dc";
-ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-ctx.fillStyle = "#9c27b0";
-ctx.font = textHeight+"px monospace";
-for (var i = 0; i < 10;++i) {
-    ctx.fillText(i.toString(), textLeftMargin,(i+2)*textHeight);
-}
-ctx.fillText("9",textLeftMargin,textHeight);
-//ctx.fillText("A", 2,240);
-
-var canvasNb1 = document.createElement("canvas");
-canvasNb1.width = textWidth*2;
-canvasNb1.height = textHeight+textTopMargin;
-
-var ctx1 = canvasNb1.getContext("2d");
-ctx1.fillStyle = "green";
-ctx1.fillRect(0, 0, canvas.width, canvas.height);
-
-var p = 0;
-var p2 = 0;
-var previousTime = 0;
-function animate(time) {
-    var timeDiff = time - previousTime;
-    previousTime = time;
-    var speed = (timeDiff * textHeight) / (500.0);
-    p -= speed;
-    if (p < -textHeight*10) p = 0;
-
-    ctx1.drawImage(canvas, 0, p);
-
-    p2 += speed;
-    if (p2 > 0) p2 = -textHeight*10;
-    ctx1.drawImage(canvas, textWidth, p2);
-
-    requestAnimationFrame(animate);
-}
-requestAnimationFrame(animate);
-
-document.body.appendChild(canvas);
-document.body.appendChild(canvasNb1);*/
