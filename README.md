@@ -1,7 +1,8 @@
-# canvas-odometer
-A HTML odometer using canvas.
 
-![a](https://user-images.githubusercontent.com/45740/37472571-b13b0080-286c-11e8-8495-ef6aba591646.gif)
+
+# ![Canvas Odometer](https://user-images.githubusercontent.com/45740/37472571-b13b0080-286c-11e8-8495-ef6aba591646.gif)
+
+A HTML odometer using canvas.
 
 # Example of Usage
 
