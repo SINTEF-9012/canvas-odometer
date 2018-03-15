@@ -4,6 +4,8 @@
 
 A HTML odometer using canvas.
 
+[Online example](https://sintef-9012.github.io/canvas-odometer/).
+
 # Example of Usage
 
 ```javascript
