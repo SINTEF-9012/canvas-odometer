@@ -1,17 +1,90 @@
+class FloatOdometer {
+    constructor(sizeRatio, config = {}) {
+        this.odometerIntegers = new Odometer(sizeRatio, config);
+        this.odometerDecimals = new Odometer(sizeRatio, config);
+
+        this.container = document.createElement("div");
+        this.container.className = "canvas-float-odometer";
+        this.container.style.display = "flex";
+        //this.container.style.justifyContent = "center";
+
+        this.minus = document.createElement("div");
+        this.minus.className = "canvas-odomoter-minus";
+        this.minus.appendChild(document.createTextNode("-"));
+        this.minus.style.fontSize = this.odometerDecimals.textHeight+"px";
+        this.minus.style.color = this.odometerDecimals.textColour;
+        this.container.appendChild(this.minus);
+
+        this.odometerIntegers.appendTo(this.container);
+
+        this.dot = document.createElement("div");
+        this.dot.className = "canvas-odomoter-dot";
+        this.dot.appendChild(document.createTextNode("."));
+        this.dot.style.fontSize = this.odometerDecimals.textHeight+"px";
+        this.dot.style.color = this.odometerDecimals.textColour;
+        this.container.appendChild(this.dot);
+
+        this.odometerDecimals.appendTo(this.container);
+        
+        this.exp = document.createElement("div");
+        this.exp.className = "canvas-odomoter-exp";
+        this.exp.appendChild(document.createTextNode(""));
+        this.exp.style.fontSize = this.odometerDecimals.textHeight+"px";
+        this.exp.style.color = this.odometerDecimals.textColour;
+        this.container.appendChild(this.exp);
+
+        this.lastNumber = 0.0;
+    }
+
+
+    set(number) {
+        let shouldGoUp = number > this.lastNumber;
+        if (number < 0) shouldGoUp = !shouldGoUp;
+
+
+        const numberStr = number.toString();
+        const match = numberStr.match(/(-?)(\d*)(\.?)(\d*)(e[\-+]\d+)?/);
+        if (!match) {
+            console.log("Unable to parse the number string", numberStr);
+            return;
+        }
+
+        const isNegative = !!match[1];
+        const integerDigits = match[2];
+        const hasDot = !!match[3];
+        const decimalDigits = match[4];
+        const exp = match[5];
+
+        this.odometerIntegers.set(integerDigits, shouldGoUp);
+        this.odometerDecimals.set(decimalDigits, shouldGoUp);
+
+        this.minus.style.visibility = isNegative ? "visible" : "hidden";
+        this.dot.style.visibility = hasDot ? "visible" : "hidden";
+        this.exp.firstChild.data = exp ? exp : "";
+
+        this.lastNumber = number;
+    }
+
+    appendTo(node) {
+        node.appendChild(this.container);
+    }
+}
+
 class Odometer {
 
-    constructor(sizeRatio = 1.0) {
-        this.background = "transparent";//#fff";
-        this.borderColour = "grey";
-        this.textColour = "red";
-        this.textFont = "calibri";
-        this.textWidth = 15 * sizeRatio;
-        this.textHeight = 21 * sizeRatio;
-        this.textLeftMargin = 2 * sizeRatio;
-        this.textTopMargin = 6 * sizeRatio;
+    constructor(sizeRatio = 1.0, config = {}) {
+        this.background = config.background || "transparent";
+        this.borderColour = config.borderColour || "grey";
+        this.textColour = config.textColour || "red";
+        this.textFont = config.textFont || "sans-serif";
+        this.textWidth = (config.textWidth || 15) * sizeRatio;
+        this.textHeight = (config.textHeight || 22) * sizeRatio;
+        this.textLeftMargin = (config.textLeftMargin || 2) * sizeRatio;
+        this.textTopMargin = (config.textTopMargin || 6) * sizeRatio;
+        this.borderPositonRatio = config.borderPositonRatio || 0.13;
 
         this.digits = [];
-        this.speed = 1.0;//0.45;
+        this.speed = config.speed || 1.0;
 
         this.container = document.createElement("div");
         this.container.className = "canvas-odometer";
@@ -37,10 +110,10 @@ class Odometer {
             ctx.fillStyle = this.textColour;
             ctx.fillText(i.toString(), this.textLeftMargin,(i+2)*this.textHeight);
             ctx.fillStyle = this.borderColour;
-            ctx.fillRect(0,(i+1)*this.textHeight+this.textHeight*0.165, this.textWidth, 2);
+            ctx.fillRect(0,(i+1)*this.textHeight+this.textHeight*this.borderPositonRatio, this.textWidth, 2);
         }
-        ctx.fillRect(0,this.textHeight*0.165, this.textWidth, 2);
-        ctx.fillRect(0,11*this.textHeight+this.textHeight*0.165, this.textWidth, 2);
+        ctx.fillRect(0,this.textHeight*this.borderPositionRatio, this.textWidth, 2);
+        ctx.fillRect(0,11*this.textHeight+this.textHeight*this.borderPositonRatio, this.textWidth, 2);
 
         this.digitsCanvas = canvas;
     }
@@ -64,21 +137,20 @@ class Odometer {
     }
 
     _digitStopCallback(index) {
-        //console.log("stop", index);
         if (index + 1 < this.digits.length) {
             const nextDigit = this.digits[index+1];
             nextDigit.stopOnDigit(parseInt(this.targetNumberStr[index+1]));
         }
     }
 
-    set(number) {
-        const shouldGoUp = number > this.targetNumber;
+    set(number, shouldGoUp) {
+        if (shouldGoUp === undefined) {
+            shouldGoUp = number > this.targetNumber;
+        }
+
         const numberStr = number.toString();
         this.targetNumber = number;
         this.targetNumberStr = numberStr;
-        //console.log(numberStr);
-
-
 
         const length = numberStr.length;
 
@@ -106,19 +178,13 @@ class Odometer {
                     digit.spin();
                 }
             }
-            //digit.stopOnDigit(parseInt(numberStr[i]));
         }
-
-        /*if (firstDifferent) {
-            this.digits[0].stopOnDigit(parseInt(numberStr[0]));
-        }*/
     }
     
 }
 
 class OdometerDigit {
     constructor(odometer) {
-        // beautiful circular reference
         this.odometer = odometer;
 
         this.directionIsUp = true;
@@ -230,11 +296,11 @@ class OdometerDigit {
     }
 }
 
-const odo = new Odometer(5.0);
+const odo = new FloatOdometer(4.0);
 odo.appendTo(document.body);
-odo.set(126789091);
+odo.set(123.456);
 
-document.body.appendChild(odo.digitsCanvas);
+//document.body.appendChild(odo.digitsCanvas);
 //odo.buildDigitsCanvas();
 /*const digit = new OdometerDigit(odo);
 digit.buildCanvas();
