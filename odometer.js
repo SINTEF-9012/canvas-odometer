@@ -11,6 +11,7 @@ class FloatOdometer {
         this.minus = document.createElement("div");
         this.minus.className = "canvas-odomoter-minus";
         this.minus.appendChild(document.createTextNode("-"));
+        this.minus.style.fontFamily = this.odometerDecimals.textFont;
         this.minus.style.fontSize = this.odometerDecimals.textHeight+"px";
         this.minus.style.color = this.odometerDecimals.textColour;
         this.container.appendChild(this.minus);
@@ -20,6 +21,7 @@ class FloatOdometer {
         this.dot = document.createElement("div");
         this.dot.className = "canvas-odomoter-dot";
         this.dot.appendChild(document.createTextNode("."));
+        this.dot.style.fontFamily = this.odometerDecimals.textFont;
         this.dot.style.fontSize = this.odometerDecimals.textHeight+"px";
         this.dot.style.color = this.odometerDecimals.textColour;
         this.container.appendChild(this.dot);
@@ -29,6 +31,7 @@ class FloatOdometer {
         this.exp = document.createElement("div");
         this.exp.className = "canvas-odomoter-exp";
         this.exp.appendChild(document.createTextNode(""));
+        this.exp.style.fontFamily = this.odometerDecimals.textFont;
         this.exp.style.fontSize = this.odometerDecimals.textHeight+"px";
         this.exp.style.color = this.odometerDecimals.textColour;
         this.container.appendChild(this.exp);
