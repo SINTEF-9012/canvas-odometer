@@ -42,8 +42,6 @@ class FloatOdometer {
 
     set(number) {
         let shouldGoUp = number > this.lastNumber;
-        if (number < 0) shouldGoUp = !shouldGoUp;
-
 
         const numberStr = number.toString();
         const match = numberStr.match(/(-?)(\d*)(\.?)(\d*)(e[\-+]\d+)?/);
